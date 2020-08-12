@@ -3,10 +3,25 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-app.use("/", function (req, res, next) {
+app.use((req, res, next) => {
+  let start = new Date();
   let time = Date.now();
   let timestamp = new Date(time).toLocaleString();
-  console.log(timestamp, req.method, "from", req.originalUrl);
+  res.on("finish", () => {
+    console.log(
+      timestamp,
+      "|",
+      req.method,
+      "from",
+      req.originalUrl,
+      "| total time",
+      new Date() - start,
+      "ms"
+    );
+  });
+
+  res.on("close", () => {});
+
   next();
 });
 
